@@ -25,19 +25,16 @@ export async function POST(request: NextRequest) {
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
         
-        // Add PDF parsing options for better error handling
-        const pdfData = await pdfParse(buffer, {
-          // Try to extract text even from corrupted PDFs
-          max: 0, // No page limit
-          version: 'v1.10.100', // Use specific version for stability
-        });
+        // Use simple PDF parsing (revert to working version)
+        const pdfData = await pdfParse(buffer);
         
         content = pdfData.text;
         
         // If no text extracted, provide helpful message
         if (!content || content.trim().length === 0) {
+          console.log('No text content found in PDF');
           return NextResponse.json({ 
-            error: 'No readable text found in PDF. The PDF may be image-based or corrupted. Try converting to text format or using a different PDF.' 
+            error: 'No readable text found in PDF. The PDF may be image-based or contain only images. Try using a text-based PDF or converting to text format.' 
           }, { status: 400 });
         }
         
