@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { Upload, FileText, MessageCircle, Send, Loader2, X, Plus, Settings } from 'lucide-react';
 import SettingsModal from './components/SettingsModal';
 
