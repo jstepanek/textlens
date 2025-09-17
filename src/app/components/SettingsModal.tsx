@@ -101,8 +101,7 @@ export default function SettingsModal({ isOpen, onClose, selectedModel, onModelC
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
               >
                 <option value="tinyllama">TinyLlama (1.1B) - Fastest</option>
-                <option value="phi2">Phi-2 (2.7B) - Balanced (Recommended)</option>
-                <option value="phi3">Phi-3 Mini (3.8B) - Higher Quality</option>
+                <option value="phi3">Phi-3 Mini (3.8B) - Balanced (Recommended)</option>
                 <option value="gemma2:2b">Gemma 2B (2B) - Google</option>
                 <option value="llama3.2:1b">Llama 3.2 1B (1B) - Meta</option>
                 <option value="mistral">Mistral (7B) - Highest Quality</option>
