@@ -225,6 +225,7 @@ export default function Home() {
                 <p>• Use text-based PDFs (not scanned images)</p>
                 <p>• Avoid password-protected or encrypted PDFs</p>
                 <p>• If PDF fails, try converting to .txt format</p>
+                <p>• For corrupted PDFs, re-save in a different app</p>
               </div>
               {isUploading && (
                 <div className="flex items-center justify-center">

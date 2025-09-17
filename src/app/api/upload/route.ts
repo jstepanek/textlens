@@ -41,51 +41,44 @@ export async function POST(request: NextRequest) {
       } catch (pdfError) {
         console.error('PDF parsing error with pdf-parse:', pdfError);
         
-        // Try fallback with pdfjs-dist
-        try {
-          console.log('Trying fallback PDF parsing with pdfjs-dist...');
-          const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
-          const uint8Array = new Uint8Array(arrayBuffer);
-          
-          const pdf = await pdfjsLib.getDocument({ 
-            data: uint8Array,
-            verbosity: 0, // Reduce logging
-            stopAtErrors: true, // Stop on errors
-          }).promise;
-          
-          let fullText = '';
-          for (let i = 1; i <= pdf.numPages; i++) {
-            try {
-              const page = await pdf.getPage(i);
-              const textContent = await page.getTextContent();
-              const pageText = textContent.items.map((item: any) => item.str).join(' ');
-              fullText += pageText + '\n';
-            } catch (pageError) {
-              console.warn(`Error parsing page ${i}:`, pageError);
-              continue; // Skip problematic pages
+        // For XRef errors, try a more lenient approach
+        if (pdfError.message.includes('XRef') || pdfError.message.includes('bad XRef')) {
+          try {
+            console.log('Trying lenient PDF parsing for XRef issues...');
+            const pdfParse = require('pdf-parse');
+            
+            // Try with more lenient options
+            const pdfData = await pdfParse(buffer, {
+              max: 0,
+              // Try to ignore XRef issues
+              normalizeWhitespace: false,
+              disableCombineTextItems: true
+            });
+            
+            if (pdfData.text && pdfData.text.trim().length > 0) {
+              content = pdfData.text;
+              console.log('Successfully parsed PDF with lenient options');
+            } else {
+              throw new Error('No text content found even with lenient parsing');
             }
+            
+          } catch (lenientError) {
+            console.error('Lenient PDF parsing also failed:', lenientError);
+            
+            // Provide helpful guidance for XRef issues
+            return NextResponse.json({ 
+              error: 'This PDF has structural issues (XRef corruption) that prevent text extraction. Please try:\n\n1. Re-save the PDF in a different application\n2. Convert to text format (.txt)\n3. Use a PDF repair tool\n4. Try a different version of the PDF' 
+            }, { status: 400 });
           }
-          
-          if (fullText.trim().length > 0) {
-            content = fullText;
-            console.log('Successfully parsed PDF with pdfjs-dist fallback');
-          } else {
-            throw new Error('No text content found in PDF');
-          }
-          
-        } catch (fallbackError) {
-          console.error('Fallback PDF parsing also failed:', fallbackError);
-          
-          // Provide specific error messages for common issues
+        } else {
+          // For other errors, provide generic helpful message
           let errorMessage = 'Failed to parse PDF file';
-          if (pdfError.message.includes('XRef') || fallbackError.message.includes('XRef')) {
-            errorMessage = 'PDF file appears to be corrupted or has invalid structure. Try using a different PDF or converting it to a new PDF format.';
-          } else if (pdfError.message.includes('password') || fallbackError.message.includes('password')) {
+          if (pdfError.message.includes('password')) {
             errorMessage = 'PDF file is password protected. Please remove the password and try again.';
-          } else if (pdfError.message.includes('encrypted') || fallbackError.message.includes('encrypted')) {
+          } else if (pdfError.message.includes('encrypted')) {
             errorMessage = 'PDF file is encrypted. Please decrypt it and try again.';
           } else {
-            errorMessage = `PDF parsing failed with multiple methods. The PDF may be corrupted, image-based, or in an unsupported format. Try converting to a text file or using a different PDF.`;
+            errorMessage = `PDF parsing failed: ${pdfError.message}. Try converting to a text file or using a different PDF.`;
           }
           
           return NextResponse.json({ error: errorMessage }, { status: 400 });
