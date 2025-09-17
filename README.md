@@ -1,36 +1,20 @@
 # TextLens - Document Chat Bot
 
-A web application that allows you to upload documents (PDFs, text files) and chat with them using AI powered by Ollama and Mistral.
+A web application that allows you to upload documents (PDFs, text files) and chat with them using AI powered by Ollama and Phi-3.
 
 ## Features
 
 - **Document Upload**: Drag and drop or click to upload PDF and text files
-- **AI Chat**: Ask questions about your documents using Mistral via Ollama
+- **AI Chat**: Ask questions about your documents using Phi-3 via Ollama
 - **Conversation History**: Maintains context throughout your chat session
 - **Responsive Interface**: Works on desktop and mobile devices
-- **Free & Local**: Uses Ollama with Mistral for completely free, local AI processing
+- **Free & Local**: Uses Ollama with Phi-3 for completely free, local AI processing
 
 ## Prerequisites
 
-Before running this application, you need to have Ollama installed and running:
+You need Ollama installed on your system. Visit [https://ollama.ai](https://ollama.ai) to install it.
 
-### 1. Install Ollama
-
-Visit [https://ollama.ai](https://ollama.ai) and install Ollama for your operating system.
-
-### 2. Pull a Model
-
-```bash
-ollama pull phi3
-```
-
-### 3. Start Ollama Service
-
-```bash
-ollama serve
-```
-
-The Ollama service will run on `http://localhost:11434` by default.
+The application will automatically download the required model and start Ollama when you run `npm run dev`.
 
 ## Installation
 
@@ -40,19 +24,9 @@ git clone <your-repo-url>
 cd textlens
 ```
 
-2. **Quick Setup (Recommended):**
+2. Install dependencies:
 ```bash
-npm run setup
-```
-This will install dependencies AND download all lightweight AI models automatically.
-
-3. **Manual Setup:**
-```bash
-# Install dependencies
 npm install
-
-# Download lightweight models
-npm run setup-models
 ```
 
 ## Running the Application
@@ -61,6 +35,11 @@ npm run setup-models
 ```bash
 npm run dev
 ```
+This will automatically:
+- Check if Ollama is installed
+- Download the Phi-3 model if needed
+- Start the Ollama service
+- Launch the web application
 
 2. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
@@ -95,23 +74,15 @@ The application works out of the box with default settings. Advanced users can c
 
 ## Troubleshooting
 
-### Ollama Connection Issues
+### Ollama Issues
 
 If you see "Ollama service is not available" errors:
 
-1. Make sure Ollama is installed and running:
+1. Make sure Ollama is installed from [https://ollama.ai](https://ollama.ai)
+2. Try running `npm run dev` again - it will automatically set up Ollama
+3. If issues persist, manually start Ollama:
    ```bash
    ollama serve
-   ```
-
-2. Verify the model is available:
-   ```bash
-   ollama list
-   ```
-
-3. If the model isn't listed, pull it:
-   ```bash
-   ollama pull phi3
    ```
 
 ### Document Processing Issues
