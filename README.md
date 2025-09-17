@@ -54,11 +54,11 @@ npm install
 # Download lightweight models
 npm run setup-models
 
-# Copy environment configuration
+# Copy environment configuration (optional)
 cp .env.local.example .env.local
 ```
 
-4. (Optional) Modify `.env.local` if your Ollama service runs on a different URL or port.
+4. (Optional) Modify `.env.local` if you want to customize AI provider settings or Ollama URL.
 
 ## Running the Application
 
@@ -90,11 +90,17 @@ npm run dev
 
 ## Configuration
 
-You can customize the application by modifying the `.env.local` file:
+The application works out of the box with default settings. You can customize it by creating a `.env.local` file:
 
+```bash
+cp .env.local.example .env.local
+```
+
+Available configuration options:
+
+- `AI_PROVIDER`: Choose between 'ollama', 'openai', or 'anthropic' (default: ollama)
 - `OLLAMA_URL`: The URL where your Ollama service is running (default: http://localhost:11434)
 - `OLLAMA_MODEL`: The Ollama model to use (default: phi3)
-- `AI_PROVIDER`: Choose between 'ollama', 'openai', or 'anthropic'
 - `OPENAI_API_KEY`: Your OpenAI API key (if using OpenAI)
 - `ANTHROPIC_API_KEY`: Your Anthropic API key (if using Anthropic)
 
