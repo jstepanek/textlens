@@ -6,18 +6,21 @@ import { Settings, X, Zap, Cloud, Cpu } from 'lucide-react';
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
+  selectedModel: string;
+  onModelChange: (model: string) => void;
 }
 
-export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
+export default function SettingsModal({ isOpen, onClose, selectedModel, onModelChange }: SettingsModalProps) {
   const [aiProvider, setAiProvider] = useState('ollama');
-  const [ollamaModel, setOllamaModel] = useState('tinyllama');
+  const [ollamaModel, setOllamaModel] = useState(selectedModel);
 
   if (!isOpen) return null;
 
   const handleSave = () => {
-    // In a real app, you'd save these to localStorage or send to API
+    // Save settings and notify parent of model change
     localStorage.setItem('aiProvider', aiProvider);
     localStorage.setItem('ollamaModel', ollamaModel);
+    onModelChange(ollamaModel);
     onClose();
   };
 
@@ -97,11 +100,11 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                 onChange={(e) => setOllamaModel(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
               >
-                <option value="tinyllama">TinyLlama (1.1B) - Fastest</option>
-                <option value="phi3">Phi-3 Mini (3.8B) - Balanced</option>
-                <option value="gemma2:2b">Gemma 2B - Google</option>
-                <option value="llama3.2:1b">Llama 3.2 1B - Meta</option>
-                <option value="mistral">Mistral (7B) - Higher Quality</option>
+                <option value="tinyllama">TinyLlama (1.1B) - ⚡⚡⚡ Fastest</option>
+                <option value="phi3">Phi-3 Mini (3.8B) - ⚡⚡ Balanced</option>
+                <option value="gemma2:2b">Gemma 2B (2B) - ⚡⚡⚡ Google</option>
+                <option value="llama3.2:1b">Llama 3.2 1B (1B) - ⚡⚡⚡ Meta</option>
+                <option value="mistral">Mistral (7B) - ⚡ Higher Quality</option>
               </select>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 Smaller models use less RAM and CPU

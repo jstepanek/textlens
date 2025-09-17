@@ -11,11 +11,12 @@ interface ChatRequest {
     role: 'user' | 'assistant';
     timestamp: Date;
   }>;
+  model?: string;
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, documentContent, conversationHistory }: ChatRequest = await request.json();
+    const { message, documentContent, conversationHistory, model }: ChatRequest = await request.json();
 
     if (!message || !documentContent) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -23,7 +24,7 @@ export async function POST(request: NextRequest) {
 
     const aiProvider = process.env.AI_PROVIDER || 'ollama';
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-    const ollamaModel = process.env.OLLAMA_MODEL || 'tinyllama';
+    const ollamaModel = model || process.env.OLLAMA_MODEL || 'tinyllama';
     
     console.log('AI Provider:', aiProvider, 'Model:', ollamaModel);
 

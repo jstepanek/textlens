@@ -25,6 +25,7 @@ export default function Home() {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [selectedModel, setSelectedModel] = useState('phi3');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = useCallback(async (file: File) => {
@@ -127,6 +128,7 @@ export default function Home() {
           message: inputMessage,
           documentContent: document.content,
           conversationHistory: messages,
+          model: selectedModel,
         }),
       });
 
@@ -366,7 +368,9 @@ export default function Home() {
         
         <SettingsModal 
           isOpen={showSettings} 
-          onClose={() => setShowSettings(false)} 
+          onClose={() => setShowSettings(false)}
+          selectedModel={selectedModel}
+          onModelChange={setSelectedModel}
         />
       </div>
     </div>
