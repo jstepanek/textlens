@@ -4,11 +4,11 @@ A modern web application that allows you to upload documents (PDFs, text files) 
 
 ## Features
 
-- 📄 **Document Upload**: Drag and drop or click to upload PDF and text files
-- 🤖 **AI Chat**: Ask questions about your documents using Mistral via Ollama
-- 💬 **Conversation History**: Maintains context throughout your chat session
-- 🎨 **Modern UI**: Clean, responsive interface with dark mode support
-- 🚀 **Free & Local**: Uses Ollama with Mistral for completely free, local AI processing
+- **Document Upload**: Drag and drop or click to upload PDF and text files
+- **AI Chat**: Ask questions about your documents using Mistral via Ollama
+- **Conversation History**: Maintains context throughout your chat session
+- **Modern UI**: Clean, responsive interface with dark mode support
+- **Free & Local**: Uses Ollama with Mistral for completely free, local AI processing
 
 ## Prerequisites
 

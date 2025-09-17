@@ -25,8 +25,17 @@ export default function Home() {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
-  const [selectedModel, setSelectedModel] = useState('phi3');
+  const [selectedModel, setSelectedModel] = useState('phi2');
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleFileUpload = useCallback(async (file: File) => {
     const allowedTypes = ['pdf', 'text', 'plain'];
@@ -237,7 +246,7 @@ export default function Home() {
                 Drag and drop a PDF or text file here, or click to browse
               </p>
               <div className="text-xs text-gray-400 dark:text-gray-500 space-y-1">
-                <p>💡 <strong>PDF Tips:</strong></p>
+                <p><strong>PDF Tips:</strong></p>
                 <p>• Use text-based PDFs (not scanned images)</p>
                 <p>• Avoid password-protected or encrypted PDFs</p>
                 <p>• If PDF fails, try converting to .txt format</p>
@@ -328,6 +337,7 @@ export default function Home() {
                       </div>
                     </div>
                   )}
+                  <div ref={messagesEndRef} />
                 </div>
 
                 <div className="border-t dark:border-gray-700 p-4">

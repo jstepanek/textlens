@@ -1,6 +1,6 @@
 # Lightweight AI Models Setup Guide
 
-## 🚀 **Quick Start - No Lag Solution**
+## **Quick Start - No Lag Solution**
 
 If Ollama is causing your computer to lag, here are lightweight alternatives:
 
@@ -66,17 +66,18 @@ ollama pull tinyllama:latest
 ollama pull phi3:latest
 ```
 
-## 🎯 **Model Comparison**
+## **Model Comparison**
 
 | Model | Size | RAM Usage | Speed | Quality |
 |-------|------|-----------|-------|---------|
-| TinyLlama | 1.1B | ~1GB | ⚡⚡⚡ | ⭐⭐ |
-| Phi-3 Mini | 3.8B | ~2GB | ⚡⚡ | ⭐⭐⭐ |
-| Gemma 2B | 2B | ~1.5GB | ⚡⚡⚡ | ⭐⭐⭐ |
-| Llama 3.2 1B | 1B | ~1GB | ⚡⚡⚡ | ⭐⭐ |
-| Mistral | 7B | ~4GB | ⚡ | ⭐⭐⭐⭐ |
+| TinyLlama | 1.1B | ~1GB | Fastest | Good |
+| Phi-2 | 2.7B | ~1.5GB | Fast | Better |
+| Phi-3 Mini | 3.8B | ~2GB | Medium | Good |
+| Gemma 2B | 2B | ~1.5GB | Fast | Good |
+| Llama 3.2 1B | 1B | ~1GB | Fastest | Good |
+| Mistral | 7B | ~4GB | Slow | Best |
 
-## 🔧 **Troubleshooting**
+## **Troubleshooting**
 
 ### If Ollama Still Lags:
 1. **Try TinyLlama first** - it's the fastest
@@ -89,7 +90,7 @@ ollama pull phi3:latest
 - Use `phi3` for better quality with moderate speed
 - Use cloud APIs for best quality with no local lag
 
-## 🚀 **Quick Commands**
+## **Quick Commands**
 
 ```bash
 # Start with TinyLlama (fastest)
