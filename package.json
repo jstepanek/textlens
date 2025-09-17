@@ -13,9 +13,11 @@
     "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-toast": "^1.2.15",
     "@types/multer": "^2.0.0",
+    "anthropic": "^0.0.0",
     "lucide-react": "^0.544.0",
     "multer": "^2.0.2",
     "next": "15.5.3",
+    "openai": "^5.20.3",
     "pdf-parse": "^1.1.1",
     "react": "19.1.0",
     "react-dom": "19.1.0"

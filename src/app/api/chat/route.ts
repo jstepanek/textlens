@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
+import OpenAI from 'openai';
+import Anthropic from '@anthropic-ai/sdk';
 
 interface ChatRequest {
   message: string;
@@ -19,8 +21,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
+    const aiProvider = process.env.AI_PROVIDER || 'ollama';
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
-    const model = process.env.OLLAMA_MODEL || 'mistral';
+    const ollamaModel = process.env.OLLAMA_MODEL || 'tinyllama';
 
     const contextLimit = 4000;
     const truncatedContent = documentContent.length > contextLimit 
@@ -42,29 +45,66 @@ ${historyContext}
 
 Please answer the user's question based on the document content above.`;
 
-    const ollamaResponse = await fetch(`${ollamaUrl}/api/generate`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model,
-        prompt: `${systemPrompt}\n\nUser: ${message}\nAssistant:`,
-        stream: false,
-        options: {
-          temperature: 0.7,
-          top_p: 0.9,
-          max_tokens: 1000,
+    let response: string;
+
+    if (aiProvider === 'openai') {
+      const openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY,
+      });
+
+      const completion = await openai.chat.completions.create({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: message }
+        ],
+        max_tokens: 1000,
+        temperature: 0.7,
+      });
+
+      response = completion.choices[0]?.message?.content || 'I apologize, but I could not generate a response.';
+
+    } else if (aiProvider === 'anthropic') {
+      const anthropic = new Anthropic({
+        apiKey: process.env.ANTHROPIC_API_KEY,
+      });
+
+      const completion = await anthropic.messages.create({
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 1000,
+        messages: [
+          { role: 'user', content: `${systemPrompt}\n\nUser: ${message}` }
+        ],
+      });
+
+      response = completion.content[0]?.type === 'text' ? completion.content[0].text : 'I apologize, but I could not generate a response.';
+
+    } else {
+      // Default to Ollama with lightweight model
+      const ollamaResponse = await fetch(`${ollamaUrl}/api/generate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      }),
-    });
+        body: JSON.stringify({
+          model: ollamaModel,
+          prompt: `${systemPrompt}\n\nUser: ${message}\nAssistant:`,
+          stream: false,
+          options: {
+            temperature: 0.7,
+            top_p: 0.9,
+            max_tokens: 1000,
+          },
+        }),
+      });
 
-    if (!ollamaResponse.ok) {
-      throw new Error(`Ollama API error: ${ollamaResponse.status}`);
+      if (!ollamaResponse.ok) {
+        throw new Error(`Ollama API error: ${ollamaResponse.status}`);
+      }
+
+      const ollamaData = await ollamaResponse.json();
+      response = ollamaData.response || 'I apologize, but I could not generate a response.';
     }
-
-    const ollamaData = await ollamaResponse.json();
-    const response = ollamaData.response || 'I apologize, but I could not generate a response.';
 
     return NextResponse.json({ response });
   } catch (error) {

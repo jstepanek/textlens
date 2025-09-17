@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { Upload, FileText, MessageCircle, Send, Loader2, X, Plus } from 'lucide-react';
+import { Upload, FileText, MessageCircle, Send, Loader2, X, Plus, Settings } from 'lucide-react';
+import SettingsModal from './components/SettingsModal';
 
 interface Message {
   id: string;
@@ -23,6 +24,7 @@ export default function Home() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = useCallback(async (file: File) => {
@@ -166,9 +168,18 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            TextLens
-          </h1>
+          <div className="flex items-center justify-center space-x-4 mb-4">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+              TextLens
+            </h1>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+              title="AI Model Settings"
+            >
+              <Settings className="h-6 w-6" />
+            </button>
+          </div>
           <p className="text-lg text-gray-600 dark:text-gray-300">
             Upload a document and chat with it using AI
           </p>
@@ -311,6 +322,11 @@ export default function Home() {
             </div>
           </div>
         )}
+        
+        <SettingsModal 
+          isOpen={showSettings} 
+          onClose={() => setShowSettings(false)} 
+        />
       </div>
     </div>
   );
