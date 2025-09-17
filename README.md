@@ -1,27 +1,27 @@
 # TextLens - Document Chat Bot
 
-A modern web application that allows you to upload documents (PDFs, text files) and chat with them using AI powered by Ollama and Mistral.
+A web application that allows you to upload documents (PDFs, text files) and chat with them using AI powered by Ollama and Mistral.
 
 ## Features
 
 - **Document Upload**: Drag and drop or click to upload PDF and text files
 - **AI Chat**: Ask questions about your documents using Mistral via Ollama
 - **Conversation History**: Maintains context throughout your chat session
-- **Modern UI**: Clean, responsive interface with dark mode support
+- **Responsive Interface**: Works on desktop and mobile devices
 - **Free & Local**: Uses Ollama with Mistral for completely free, local AI processing
 
 ## Prerequisites
 
-Before running this application, you need to have Ollama installed and running with the Mistral model:
+Before running this application, you need to have Ollama installed and running:
 
 ### 1. Install Ollama
 
 Visit [https://ollama.ai](https://ollama.ai) and install Ollama for your operating system.
 
-### 2. Pull the Mistral Model
+### 2. Pull a Model
 
 ```bash
-ollama pull mistral
+ollama pull phi3
 ```
 
 ### 3. Start Ollama Service
@@ -87,14 +87,16 @@ npm run dev
 
 - PDF files (.pdf)
 - Text files (.txt)
-- Microsoft Word documents (.doc, .docx)
 
 ## Configuration
 
 You can customize the application by modifying the `.env.local` file:
 
 - `OLLAMA_URL`: The URL where your Ollama service is running (default: http://localhost:11434)
-- `OLLAMA_MODEL`: The Ollama model to use (default: mistral)
+- `OLLAMA_MODEL`: The Ollama model to use (default: phi3)
+- `AI_PROVIDER`: Choose between 'ollama', 'openai', or 'anthropic'
+- `OPENAI_API_KEY`: Your OpenAI API key (if using OpenAI)
+- `ANTHROPIC_API_KEY`: Your Anthropic API key (if using Anthropic)
 
 ## Troubleshooting
 
@@ -107,14 +109,14 @@ If you see "Ollama service is not available" errors:
    ollama serve
    ```
 
-2. Verify the Mistral model is available:
+2. Verify the model is available:
    ```bash
    ollama list
    ```
 
 3. If the model isn't listed, pull it:
    ```bash
-   ollama pull mistral
+   ollama pull phi3
    ```
 
 ### Document Processing Issues
@@ -133,6 +135,8 @@ This project is built with:
 - **Lucide React** - Icons
 - **pdf-parse** - PDF text extraction
 - **Ollama** - Local AI inference
+- **OpenAI API** - Cloud AI fallback
+- **Anthropic API** - Cloud AI fallback
 
 ## License
 

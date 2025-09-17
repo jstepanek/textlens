@@ -19,8 +19,6 @@ echo ""
 echo "Downloading TinyLlama (1.1B) - Fastest..."
 ollama pull tinyllama
 
-echo "Downloading Phi-2 (2.7B) - Balanced (Recommended)..."
-ollama pull phi2
 
 echo "Downloading Phi-3 Mini (3.8B) - Higher Quality..."
 ollama pull phi3
@@ -36,12 +34,11 @@ echo "SUCCESS: All lightweight models downloaded!"
 echo ""
 echo "Available models:"
 echo "   • TinyLlama (1.1B) - Fastest"
-echo "   • Phi-2 (2.7B) - Balanced (Recommended)"
-echo "   • Phi-3 Mini (3.8B) - Higher Quality"
+echo "   • Phi-3 Mini (3.8B) - Balanced (Recommended)"
 echo "   • Gemma 2B (2B) - Google"
 echo "   • Llama 3.2 1B (1B) - Meta"
 echo ""
 echo "To start Ollama: ollama serve"
 echo "Then visit: http://localhost:3000"
 echo ""
-echo "Tip: Use Phi-2 for the best balance of speed and quality!"
+echo "Tip: Use Phi-3 Mini for the best balance of speed and quality!"
