@@ -1,0 +1,11 @@
+This is a test document for TextLens.
+
+TextLens is a document chatbot that allows users to upload documents and ask questions about them using AI powered by Ollama and Mistral.
+
+Features:
+- PDF and text file upload
+- AI-powered Q&A
+- Conversation history
+- Modern UI with dark mode support
+
+This is a simple test to verify that the document upload and processing works correctly.

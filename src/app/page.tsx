@@ -26,11 +26,18 @@ export default function Home() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileUpload = useCallback(async (file: File) => {
-    if (!file.type.includes('pdf') && !file.type.includes('text')) {
-      alert('Please upload a PDF or text file');
+    const allowedTypes = ['pdf', 'text', 'plain'];
+    const fileExtension = file.name.split('.').pop()?.toLowerCase();
+    const isAllowedType = allowedTypes.some(type => 
+      file.type.includes(type) || fileExtension === type || fileExtension === 'txt'
+    );
+    
+    if (!isAllowedType) {
+      alert('Please upload a PDF or text file (.pdf, .txt)');
       return;
     }
 
+    console.log('Uploading file:', file.name, 'Type:', file.type, 'Size:', file.size);
     setIsUploading(true);
     const formData = new FormData();
     formData.append('file', file);
@@ -42,7 +49,8 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `Upload failed with status ${response.status}`);
       }
 
       const result = await response.json();
@@ -54,7 +62,8 @@ export default function Home() {
       setMessages([]);
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Failed to upload document');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload document';
+      alert(`Upload failed: ${errorMessage}`);
     } finally {
       setIsUploading(false);
     }

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import pdf from 'pdf-parse';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,13 +9,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
-    if (!file.type.includes('pdf') && !file.type.includes('text')) {
-      return NextResponse.json({ error: 'Unsupported file type' }, { status: 400 });
+    const fileName = file.name.toLowerCase();
+    const isPdf = file.type.includes('pdf') || fileName.endsWith('.pdf');
+    const isText = file.type.includes('text') || file.type.includes('plain') || fileName.endsWith('.txt');
+    
+    if (!isPdf && !isText) {
+      return NextResponse.json({ error: 'Unsupported file type. Please upload a PDF or text file.' }, { status: 400 });
     }
 
     let content: string;
 
-    if (file.type.includes('pdf')) {
+    if (isPdf) {
+      const pdf = (await import('pdf-parse')).default;
       const buffer = Buffer.from(await file.arrayBuffer());
       const pdfData = await pdf(buffer);
       content = pdfData.text;
