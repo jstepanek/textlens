@@ -43,46 +43,63 @@ export default function Home() {
     setIsUploading(true);
     const formData = new FormData();
     formData.append('file', file);
+    console.log('FormData created, sending request...');
 
     try {
+      console.log('Sending fetch request...');
       const response = await fetch('/api/upload', {
         method: 'POST',
         body: formData,
       });
+      console.log('Response received:', response.status, response.statusText);
 
       if (!response.ok) {
+        console.log('Response not OK, parsing error...');
         const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
         throw new Error(errorData.error || `Upload failed with status ${response.status}`);
       }
 
+      console.log('Parsing response JSON...');
       const result = await response.json();
+      console.log('Response parsed successfully, setting document...');
+      
       setDocument({
         name: file.name,
         content: result.content,
         size: file.size,
       });
       setMessages([]);
+      console.log('Document set successfully!');
     } catch (error) {
       console.error('Upload error:', error);
       const errorMessage = error instanceof Error ? error.message : 'Failed to upload document';
       alert(`Upload failed: ${errorMessage}`);
     } finally {
       setIsUploading(false);
+      console.log('Upload process completed');
     }
   }, []);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    console.log('File dropped:', e.dataTransfer.files);
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
+      console.log('Dropped file:', files[0].name);
       handleFileUpload(files[0]);
+    } else {
+      console.log('No files dropped');
     }
   }, [handleFileUpload]);
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('File input changed:', e.target.files);
     const files = e.target.files;
     if (files && files.length > 0) {
+      console.log('File selected:', files[0].name);
       handleFileUpload(files[0]);
+    } else {
+      console.log('No files selected');
     }
   }, [handleFileUpload]);
 
@@ -191,7 +208,10 @@ export default function Home() {
               className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-12 text-center hover:border-blue-400 dark:hover:border-blue-500 transition-colors cursor-pointer"
               onDrop={handleDrop}
               onDragOver={(e) => e.preventDefault()}
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => {
+                console.log('Upload area clicked');
+                fileInputRef.current?.click();
+              }}
             >
               <Upload className="mx-auto h-12 w-12 text-gray-400 mb-4" />
               <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
