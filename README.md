@@ -18,13 +18,7 @@ The application will automatically download the required model and start Ollama 
 
 ## Installation
 
-1. Clone this repository:
-```bash
-git clone <your-repo-url>
-cd textlens
-```
-
-2. Install dependencies:
+Install dependencies:
 ```bash
 npm install
 ```
