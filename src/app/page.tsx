@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback } from 'react';
-import { Upload, FileText, MessageCircle, Send, Loader2, X } from 'lucide-react';
+import { Upload, FileText, MessageCircle, Send, Loader2, X, Plus } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -153,6 +153,15 @@ export default function Home() {
     }
   };
 
+  const startNewConversation = () => {
+    setDocument(null);
+    setMessages([]);
+    setInputMessage('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
       <div className="container mx-auto px-4 py-8">
@@ -206,12 +215,23 @@ export default function Home() {
                     ({(document.size / 1024).toFixed(1)} KB)
                   </span>
                 </div>
-                <button
-                  onClick={clearDocument}
-                  className="text-blue-200 hover:text-white transition-colors"
-                >
-                  <X className="h-5 w-5" />
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={startNewConversation}
+                    className="text-blue-200 hover:text-white transition-colors flex items-center space-x-1 px-2 py-1 rounded hover:bg-blue-700"
+                    title="Start new conversation"
+                  >
+                    <Plus className="h-4 w-4" />
+                    <span className="text-sm">New</span>
+                  </button>
+                  <button
+                    onClick={clearDocument}
+                    className="text-blue-200 hover:text-white transition-colors"
+                    title="Close document"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
               </div>
 
               <div className="h-96 flex flex-col">
@@ -275,6 +295,17 @@ export default function Home() {
                       <Send className="h-4 w-4" />
                     </button>
                   </div>
+                  {messages.length > 0 && (
+                    <div className="mt-3 flex justify-center">
+                      <button
+                        onClick={startNewConversation}
+                        className="flex items-center space-x-2 px-3 py-1 text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      >
+                        <Plus className="h-4 w-4" />
+                        <span>Start new conversation</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
