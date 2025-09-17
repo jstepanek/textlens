@@ -40,13 +40,21 @@ git clone <your-repo-url>
 cd textlens
 ```
 
-2. Install dependencies:
+2. **Quick Setup (Recommended):**
 ```bash
-npm install
+npm run setup
 ```
+This will install dependencies AND download all lightweight AI models automatically.
 
-3. Copy the environment configuration:
+3. **Manual Setup:**
 ```bash
+# Install dependencies
+npm install
+
+# Download lightweight models
+npm run setup-models
+
+# Copy environment configuration
 cp .env.local.example .env.local
 ```
 

@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "setup-models": "node -e \"process.platform === 'win32' ? require('child_process').exec('setup-models.bat') : require('child_process').exec('./setup-models.sh')\"",
+    "setup": "npm install && npm run setup-models"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.62.0",
