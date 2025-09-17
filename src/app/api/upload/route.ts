@@ -20,10 +20,16 @@ export async function POST(request: NextRequest) {
     let content: string;
 
     if (isPdf) {
-      const pdf = (await import('pdf-parse')).default;
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const pdfData = await pdf(buffer);
-      content = pdfData.text;
+      try {
+        const pdfParse = require('pdf-parse');
+        const arrayBuffer = await file.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        const pdfData = await pdfParse(buffer);
+        content = pdfData.text;
+      } catch (pdfError) {
+        console.error('PDF parsing error:', pdfError);
+        return NextResponse.json({ error: `Failed to parse PDF file: ${pdfError.message}` }, { status: 400 });
+      }
     } else {
       content = await file.text();
     }
