@@ -200,6 +200,12 @@ export default function Home() {
               <p className="text-gray-500 dark:text-gray-400 mb-4">
                 Drag and drop a PDF or text file here, or click to browse
               </p>
+              <div className="text-xs text-gray-400 dark:text-gray-500 space-y-1">
+                <p>💡 <strong>PDF Tips:</strong></p>
+                <p>• Use text-based PDFs (not scanned images)</p>
+                <p>• Avoid password-protected or encrypted PDFs</p>
+                <p>• If PDF fails, try converting to .txt format</p>
+              </div>
               {isUploading && (
                 <div className="flex items-center justify-center">
                   <Loader2 className="animate-spin h-5 w-5 text-blue-500 mr-2" />

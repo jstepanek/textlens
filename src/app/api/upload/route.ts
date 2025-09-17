@@ -24,11 +24,75 @@ export async function POST(request: NextRequest) {
         const pdfParse = require('pdf-parse');
         const arrayBuffer = await file.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer);
-        const pdfData = await pdfParse(buffer);
+        
+        // Add PDF parsing options for better error handling
+        const pdfData = await pdfParse(buffer, {
+          // Try to extract text even from corrupted PDFs
+          max: 0, // No page limit
+          version: 'v1.10.100', // Use specific version for stability
+        });
+        
         content = pdfData.text;
+        
+        // If no text extracted, provide helpful message
+        if (!content || content.trim().length === 0) {
+          return NextResponse.json({ 
+            error: 'No readable text found in PDF. The PDF may be image-based or corrupted. Try converting to text format or using a different PDF.' 
+          }, { status: 400 });
+        }
+        
       } catch (pdfError) {
-        console.error('PDF parsing error:', pdfError);
-        return NextResponse.json({ error: `Failed to parse PDF file: ${pdfError.message}` }, { status: 400 });
+        console.error('PDF parsing error with pdf-parse:', pdfError);
+        
+        // Try fallback with pdfjs-dist
+        try {
+          console.log('Trying fallback PDF parsing with pdfjs-dist...');
+          const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+          const uint8Array = new Uint8Array(arrayBuffer);
+          
+          const pdf = await pdfjsLib.getDocument({ 
+            data: uint8Array,
+            verbosity: 0, // Reduce logging
+            stopAtErrors: true, // Stop on errors
+          }).promise;
+          
+          let fullText = '';
+          for (let i = 1; i <= pdf.numPages; i++) {
+            try {
+              const page = await pdf.getPage(i);
+              const textContent = await page.getTextContent();
+              const pageText = textContent.items.map((item: any) => item.str).join(' ');
+              fullText += pageText + '\n';
+            } catch (pageError) {
+              console.warn(`Error parsing page ${i}:`, pageError);
+              continue; // Skip problematic pages
+            }
+          }
+          
+          if (fullText.trim().length > 0) {
+            content = fullText;
+            console.log('Successfully parsed PDF with pdfjs-dist fallback');
+          } else {
+            throw new Error('No text content found in PDF');
+          }
+          
+        } catch (fallbackError) {
+          console.error('Fallback PDF parsing also failed:', fallbackError);
+          
+          // Provide specific error messages for common issues
+          let errorMessage = 'Failed to parse PDF file';
+          if (pdfError.message.includes('XRef') || fallbackError.message.includes('XRef')) {
+            errorMessage = 'PDF file appears to be corrupted or has invalid structure. Try using a different PDF or converting it to a new PDF format.';
+          } else if (pdfError.message.includes('password') || fallbackError.message.includes('password')) {
+            errorMessage = 'PDF file is password protected. Please remove the password and try again.';
+          } else if (pdfError.message.includes('encrypted') || fallbackError.message.includes('encrypted')) {
+            errorMessage = 'PDF file is encrypted. Please decrypt it and try again.';
+          } else {
+            errorMessage = `PDF parsing failed with multiple methods. The PDF may be corrupted, image-based, or in an unsupported format. Try converting to a text file or using a different PDF.`;
+          }
+          
+          return NextResponse.json({ error: errorMessage }, { status: 400 });
+        }
       }
     } else {
       content = await file.text();
