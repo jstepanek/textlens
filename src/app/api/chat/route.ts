@@ -24,6 +24,8 @@ export async function POST(request: NextRequest) {
     const aiProvider = process.env.AI_PROVIDER || 'ollama';
     const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
     const ollamaModel = process.env.OLLAMA_MODEL || 'tinyllama';
+    
+    console.log('AI Provider:', aiProvider, 'Model:', ollamaModel);
 
     const contextLimit = 4000;
     const truncatedContent = documentContent.length > contextLimit 
@@ -99,6 +101,7 @@ Please answer the user's question based on the document content above.`;
       });
 
       if (!ollamaResponse.ok) {
+        console.error('Ollama API error:', ollamaResponse.status, ollamaResponse.statusText);
         throw new Error(`Ollama API error: ${ollamaResponse.status}`);
       }
 

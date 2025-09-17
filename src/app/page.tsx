@@ -131,7 +131,8 @@ export default function Home() {
       });
 
       if (!response.ok) {
-        throw new Error('Chat request failed');
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `Chat request failed with status ${response.status}`);
       }
 
       const result = await response.json();
@@ -145,9 +146,22 @@ export default function Home() {
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Chat error:', error);
+      
+      let errorContent = 'Sorry, I encountered an error. Please try again.';
+      
+      if (error instanceof Error) {
+        if (error.message.includes('Ollama service is not available')) {
+          errorContent = 'Ollama is not running. Please start Ollama with a lightweight model:\n\nollama pull tinyllama\nollama serve\n\nOr use cloud APIs in settings.';
+        } else if (error.message.includes('Missing required fields')) {
+          errorContent = 'Please upload a document first before asking questions.';
+        } else {
+          errorContent = `Error: ${error.message}`;
+        }
+      }
+      
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: errorContent,
         role: 'assistant',
         timestamp: new Date(),
       };
